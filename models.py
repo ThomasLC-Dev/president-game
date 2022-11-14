@@ -5,7 +5,7 @@ import random
 class Card:
     numbers = ['3', '4', '5', '6', '7', '8', '9', '10', 'V', 'D', 'R', 'A', '2']
 
-    def __init__(self, number, type):
+    def __init__(self, number: int, type: str):
         self.number: int = number
         self.type: str = type
 
@@ -49,7 +49,6 @@ class Player:
         self.name = name
         self.hand = []
 
-
     def add_to_hand(self, card: Card):
         self.hand.append(card)
 
@@ -57,9 +56,40 @@ class Player:
         self.hand.remove(card)
 
 
-player = Player()
-player.add_to_hand(Card('3', '♥'))
-player.add_to_hand(Card('R', '♥'))
-print(len(player.hand))
-player.remove_from_hand(Card('3', '♥'))
-print(len(player.hand))
+class PresidentGame:
+    def __init__(self, players: []):
+        self.deck = Deck()
+        self.deck.shuffle()
+        self.players = players
+        self.distribute_cards()
+
+    def distribute_cards(self):
+        indexPlayer = 0
+        for card in self.deck.cards:
+            if indexPlayer >= len(self.players):
+                indexPlayer = 0
+
+            self.players[indexPlayer].add_to_hand(card)
+            indexPlayer += 1
+
+
+player1 = Player()
+player2 = Player()
+players = [player1, player2]
+presidentGame = PresidentGame(players)
+
+for card1 in player1.hand:
+    print(card1.number + "" + card1.type)
+
+print("----------------")
+
+
+for card2 in player2.hand:
+    print(card2.number + "" + card2.type)
+
+
+#player.add_to_hand(Card('3', '♥'))
+#player.add_to_hand(Card('R', '♥'))
+#print(len(player.hand))
+#player.remove_from_hand(Card('3', '♥'))
+#print(len(player.hand))
