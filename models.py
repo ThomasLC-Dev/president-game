@@ -5,8 +5,8 @@ import random
 class Card:
     numbers = ['3', '4', '5', '6', '7', '8', '9', '10', 'V', 'D', 'R', 'A', '2']
 
-    def __init__(self, number: int, type: str):
-        self.number: int = number
+    def __init__(self, number: str, type: str):
+        self.number: str = number
         self.type: str = type
 
     def __eq__(self, other: Card):
@@ -15,8 +15,14 @@ class Card:
     def __gt__(self, other: Card):
         return self.numbers.index(self.number) > self.numbers.index(other.number)
 
+    def __ge__(self, other: Card):
+        return self.numbers.index(self.number) >= self.numbers.index(other.number)
+
     def __lt__(self, other: Card):
         return self.numbers.index(self.number) < self.numbers.index(other.number)
+
+    def __le__(self, other: Card):
+        return self.numbers.index(self.number) <= self.numbers.index(other.number)
 
 
 class Deck:
@@ -25,7 +31,7 @@ class Deck:
         self.create_deck()
 
     def create_deck(self):
-        numbers = ['3', '4', '5', '6', '7', '8', '9', '10', 'V', 'D', 'R', 'A', '2']
+        numbers = Card.numbers
         types = ['♥', '♦', '♣', '♠']
         for number in numbers:
             for type in types:
@@ -48,12 +54,57 @@ class Player:
     def __init__(self, name=''):
         self.name = name
         self.hand = []
+        if(self.name == ''):
+            self.name = "Player " + str(random.randrange(1, 100))
 
     def add_to_hand(self, card: Card):
-        self.hand.append(card)
+        if len(self.hand) == 0:
+            print(card.number + card.type)
+            self.hand.append(card)
+        else:
+            for cardInHandIndex, cardInHand in enumerate(self.hand):
+                if cardInHand >= card:
+                    self.hand.insert(cardInHandIndex, card)
+                    break
+                elif cardInHandIndex == len(self.hand) - 1:
+                    self.hand.append(card)
+                    break
+
 
     def remove_from_hand(self, card: Card):
         self.hand.remove(card)
+
+    def play(self, numberOfCards, lastValueOfCards):
+        print(self.name + " - Play")
+        self.show_hand()
+        availableCards = []
+        while(len(availableCards) < int(numberOfCards)):
+            availableCard = []
+            valueOfCards = input("Valeur des cartes : ")
+            if Card(valueOfCards, '') >= Card(lastValueOfCards, ''):
+                for card in self.hand:
+                    if card.number == valueOfCards and len(availableCards) < int(numberOfCards):
+                        availableCards.append(card)
+            else:
+                print("Valeur de carte insuffisante")
+
+
+        for removedCard in availableCards:
+            self.remove_from_hand(removedCard)
+
+        print("Vous avez joué : " + valueOfCards)
+        return valueOfCards
+
+    def show_hand(self):
+        cardsValue = []
+        for card in self.hand:
+            cardsValue.append(card.number+card.type)
+
+        print("[" + ",".join(cardsValue) + "]")
+
+
+class AIPlayer(Player):
+    pass
 
 
 class PresidentGame:
@@ -73,23 +124,7 @@ class PresidentGame:
             indexPlayer += 1
 
 
-player1 = Player()
-player2 = Player()
-players = [player1, player2]
-presidentGame = PresidentGame(players)
-
-for card1 in player1.hand:
-    print(card1.number + "" + card1.type)
-
-print("----------------")
-
-
-for card2 in player2.hand:
-    print(card2.number + "" + card2.type)
-
-
-#player.add_to_hand(Card('3', '♥'))
-#player.add_to_hand(Card('R', '♥'))
-#print(len(player.hand))
-#player.remove_from_hand(Card('3', '♥'))
-#print(len(player.hand))
+class Trick:
+    def __init__(self):
+        self.numberOfCards = 0
+        self.lastValueOfCards = '3'

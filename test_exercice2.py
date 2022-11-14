@@ -11,12 +11,20 @@ class TestCardsExercice2(unittest.TestCase):
         self.assertFalse(player_incognito.name == '')
 
     def test_default_game_has_three_players(self):
-        game = models.PresidentGame()
+        player = models.Player()
+        AIPlayer1 = models.AIPlayer()
+        AIPlayer2 = models.AIPlayer()
+        players = [player, AIPlayer1, AIPlayer2]
+        game = models.PresidentGame(players)
         self.assertTrue(len(game.players) == 3)
 
     def test_game_launch_distributes_cards(self):
         """ Game generation should distribute cards evenly. """
-        game = models.PresidentGame()
+        player = models.Player()
+        AIPlayer1 = models.AIPlayer()
+        AIPlayer2 = models.AIPlayer()
+        players = [player, AIPlayer1, AIPlayer2]
+        game = models.PresidentGame(players)
         player_1 = game.players[0]
         player_2 = game.players[1]
         print(player_1.hand)
