@@ -31,14 +31,26 @@ print("Début du jeu")
 while(not endGame):
     print("Nouveau tour")
     trick = models.Trick()
+    trick.lastPlayer = currentPlayer
     currentPlayer.show_hand()
     trick.numberOfCards = input("Nombre de cartes : ")
     endTrick = False
     while(not endTrick):
         print(trick.numberOfCards)
-        trick.lastValueOfCards = currentPlayer.play(trick.numberOfCards, trick.lastValueOfCards)
+        lastPlayerValue = currentPlayer.play(trick.numberOfCards, trick.lastValueOfCards)
+
+        if lastPlayerValue is not None:
+            trick.lastValueOfCards = lastPlayerValue
+            trick.lastPlayer = currentPlayer
+
         currentPlayer.show_hand()
-        currentPlayer = next_player(currentPlayer, players)
+
+        if next_player(currentPlayer, players) == trick.lastPlayer:
+            currentPlayer = trick.lastPlayer
+            break
+        else:
+            currentPlayer = next_player(currentPlayer, players)
+
 
 
 #for card in player.hand:

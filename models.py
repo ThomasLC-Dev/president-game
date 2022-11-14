@@ -77,6 +77,12 @@ class Player:
     def play(self, numberOfCards, lastValueOfCards):
         print(self.name + " - Play")
         self.show_hand()
+
+        wantToPlay = input("Désirez-vous passer votre tour : ")
+        if wantToPlay == "Y":
+            return None
+
+
         availableCards = []
         while(len(availableCards) < int(numberOfCards)):
             availableCard = []
@@ -101,6 +107,9 @@ class Player:
             cardsValue.append(card.number+card.type)
 
         print("[" + ",".join(cardsValue) + "]")
+
+    def __eq__(self, other: Player):
+        return self.name == other.name
 
 
 class AIPlayer(Player):
@@ -128,3 +137,4 @@ class Trick:
     def __init__(self):
         self.numberOfCards = 0
         self.lastValueOfCards = '3'
+        self.lastPlayer = None
