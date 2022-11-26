@@ -51,15 +51,15 @@ class Deck:
 
 class Player:
 
-    def __init__(self, name=''):
+    def __init__(self, name='', role=''):
         self.name = name
+        self.role = role
         self.hand = []
         if(self.name == ''):
             self.name = "Player " + str(random.randrange(1, 100))
 
     def add_to_hand(self, card: Card):
         if len(self.hand) == 0:
-            print(card.number + card.type)
             self.hand.append(card)
         else:
             for cardInHandIndex, cardInHand in enumerate(self.hand):
@@ -77,17 +77,18 @@ class Player:
     def play(self, numberOfCards, lastValueOfCards):
         print(self.name + " - Play")
         self.show_hand()
+        print("Vous devez jouer " + str(numberOfCards) + " cartes d'une valeur minimum de " + lastValueOfCards + ".")
 
-        wantToPlay = input("Désirez-vous passer votre tour : ")
-        if wantToPlay == "Y":
+        skipPlay = input("Désirez-vous passer votre tour : ")
+        if skipPlay == "Y":
             return None
 
 
         availableCards = []
         while(len(availableCards) < int(numberOfCards)):
-            availableCard = []
+            availableCards = []
             valueOfCards = input("Valeur des cartes : ")
-            if Card(valueOfCards, '') >= Card(lastValueOfCards, ''):
+            if valueOfCards in Card.numbers and Card(valueOfCards, '') >= Card(lastValueOfCards, ''):
                 for card in self.hand:
                     if card.number == valueOfCards and len(availableCards) < int(numberOfCards):
                         availableCards.append(card)
@@ -108,12 +109,47 @@ class Player:
 
         print("[" + ",".join(cardsValue) + "]")
 
+    def select_number_of_cards(self):
+        self.show_hand()
+        numberOfCards = input("Vous êtes le premier joueur, veuillez indiquer le nombre de cartes du tour : ")
+        return numberOfCards
+
     def __eq__(self, other: Player):
         return self.name == other.name
 
 
 class AIPlayer(Player):
-    pass
+
+    def __init__(self):
+        self.name = "AI Player " + str(random.randrange(1, 100))
+        super().__init__(self.name)
+    def play(self, numberOfCards, lastValueOfCards):
+        print(self.name + " - Play")
+
+        availableCards = []
+        valueOfCards=lastValueOfCards
+        while (len(availableCards) < int(numberOfCards)):
+            availableCards = []
+            for card in self.hand:
+                if card.number == valueOfCards and len(availableCards) < int(numberOfCards):
+                    availableCards.append(card)
+
+            if len(availableCards) >= int(numberOfCards):
+                break
+            elif valueOfCards == "2":
+                return None
+            else:
+                valueOfCards = Card.numbers[Card.numbers.index(valueOfCards)+1]
+
+
+        for removedCard in availableCards:
+            self.remove_from_hand(removedCard)
+
+        print(self.name + " a joué des cartes de valeur " + valueOfCards)
+        return valueOfCards
+
+    def select_number_of_cards(self):
+        return random.randrange(1, 4)
 
 
 class PresidentGame:
