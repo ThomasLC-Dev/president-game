@@ -1,107 +1,98 @@
 import models
 
 
-def next_player(currentPlayer, players):
-    currentPlayerIndex = players.index(currentPlayer)
-    if currentPlayerIndex >= len(players) - 1:
-        nextPlayer = players[0]
+def next_player(current_player, players):
+    """
+    Function to get the next player
+    :param current_player: Current player
+    :param players: List of players
+    :return: Return the next player
+    """
+    current_player_index = players.index(current_player)
+    if current_player_index >= len(players) - 1:
+        next_player = players[0]
     else:
-        nextPlayer = players[currentPlayerIndex + 1]
+        next_player = players[current_player_index + 1]
 
-    return nextPlayer
+    return next_player
 
 
-player1 = models.Player()
-AIPlayer1 = models.AIPlayer()
-AIPlayer2 = models.AIPlayer()
-players = [player1, AIPlayer1, AIPlayer2]
+player_name = input("Quel est votre nom ?")
+player_1 = models.Player(player_name)
+AI_player_1 = models.AIPlayer()
+AI_player_2 = models.AIPlayer()
+players = [player_1, AI_player_1, AI_player_2]
 
-endProgram = False
-havePresident = False
+end_program = False
+have_president = False
 
-while not endProgram:
-    endGame = False
-    currentPlayer = None
-    presidentGame = models.PresidentGame(players)
+while not end_program:
+    end_game = False
+    current_player = None
+    president_game = models.PresidentGame(players)
 
 
     for player in players:
 
-        if havePresident:
+        if have_president:
             if player.role == "Président":
-                currentPlayer = player
-                havePresident = False
+                current_player = player
+                have_president = False
                 break
         else:
             for card in player.hand:
                 if card.number == 'D' and card.type == '♥':
                     print(player.name + " - Premier joueur")
-                    currentPlayer = player
+                    current_player = player
                     break
 
         for player in players:
             player.role == ""
 
     print("Début du jeu")
-    while not endGame:
+    while not end_game:
 
         print("Nouveau tour")
         trick = models.Trick()
-        trick.lastPlayer = currentPlayer
-        trick.numberOfCards = currentPlayer.select_number_of_cards()
-        endTrick = False
+        trick.last_player = current_player
+        trick.number_of_cards = current_player.select_number_of_cards()
+        end_trick = False
 
-        while not endTrick:
-            while len(currentPlayer.hand) == 0:
-                currentPlayer = next_player(currentPlayer, players)
+        while not end_trick:
+            while len(current_player.hand) == 0:
+                current_player = next_player(current_player, players)
 
-            lastPlayerValue = currentPlayer.play(trick.numberOfCards, trick.lastValueOfCards)
+            last_player_value = current_player.play(trick.number_of_cards, trick.last_value_of_cards)
 
-            if lastPlayerValue is not None:
-                trick.lastValueOfCards = lastPlayerValue
-                trick.lastPlayer = currentPlayer
+            if last_player_value is not None:
+                trick.last_value_of_cards = last_player_value
+                trick.last_player = current_player
             else:
-                print(currentPlayer.name + " a passé son tour !")
-                print(trick.lastPlayer.name + " : LAST PLAYER")
+                print(current_player.name + " a passé son tour !")
+                print(trick.last_player.name + " : LAST PLAYER")
 
-            if len(currentPlayer.hand) == 0:
-                if havePresident:
-                    while len(currentPlayer.hand) == 0:
-                        currentPlayer = next_player(currentPlayer, players)
-                    currentPlayer.role = "Troufion"
-                    print(currentPlayer.name + " devient Troufion !")
-                    endTrick = True
-                    endGame = True
+            if len(current_player.hand) == 0:
+                if have_president:
+                    while len(current_player.hand) == 0:
+                        current_player = next_player(current_player, players)
+                    current_player.role = "Troufion"
+                    print(current_player.name + " devient Troufion !")
+                    end_trick = True
+                    end_game = True
                     break
                 else:
-                    currentPlayer.role = "Président"
-                    print(currentPlayer.name + " devient Président !")
-                    havePresident = True
+                    current_player.role = "Président"
+                    print(current_player.name + " devient Président !")
+                    have_president = True
 
-            if next_player(currentPlayer, players) == trick.lastPlayer or trick.lastValueOfCards == "2" or (next_player(currentPlayer, players).role == "Président" and next_player(next_player(currentPlayer, players), players) == trick.lastPlayer):
-                if trick.lastPlayer.role != "Président":
-                    currentPlayer = trick.lastPlayer
-                endTrick = True
+            if next_player(current_player, players) == trick.last_player or trick.last_value_of_cards == "2" or (next_player(current_player, players).role == "Président" and next_player(next_player(current_player, players), players) == trick.lastPlayer):
+                if trick.last_player.role != "Président":
+                    current_player = trick.last_player
+                end_trick = True
             else:
-                currentPlayer = next_player(currentPlayer, players)
+                current_player = next_player(current_player, players)
 
 
-    continueToPlay = input("Voulez vous faire une autre partie : ")
-    if continueToPlay != "Y":
-        endProgram = True
-
-# for card in player.hand:
-#    print(card.number + "" + card.type)
-#
-# print("----------------")
-
-
-# for card1 in AIPlayer1.hand:
-#    print(card1.number + "" + card1.type)
-
-
-# print("----------------")
-
-
-# for card2 in AIPlayer2.hand:
-#    print(card2.number + "" + card2.type)
+    continue_to_play = input("Voulez vous faire une autre partie : ")
+    if continue_to_play != "Y":
+        end_program = True

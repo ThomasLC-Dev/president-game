@@ -3,6 +3,10 @@ import random
 
 
 class Card:
+    """
+    Card class
+    Use to store information about each card
+    """
     numbers = ['3', '4', '5', '6', '7', '8', '9', '10', 'V', 'D', 'R', 'A', '2']
 
     def __init__(self, number: str, type: str):
@@ -26,6 +30,10 @@ class Card:
 
 
 class Deck:
+    """
+    Deck class
+    Use to create the deck of cards
+    """
     def __init__(self):
         self.cards = []
         self.create_deck()
@@ -50,7 +58,10 @@ class Deck:
 
 
 class Player:
-
+    """
+    Player class
+    Use to store user information, and allow player to show him hand and to play
+    """
     def __init__(self, name='', role=''):
         self.name = name
         self.role = role
@@ -74,85 +85,92 @@ class Player:
     def remove_from_hand(self, card: Card):
         self.hand.remove(card)
 
-    def play(self, numberOfCards, lastValueOfCards):
+    def play(self, number_of_cards, last_value_of_cards):
         print(self.name + " - Play")
         self.show_hand()
-        print("Vous devez jouer " + str(numberOfCards) + " cartes d'une valeur minimum de " + lastValueOfCards + ".")
+        print("Vous devez jouer " + str(number_of_cards) + " cartes d'une valeur minimum de " + last_value_of_cards + ".")
 
-        skipPlay = input("Désirez-vous passer votre tour : ")
-        if skipPlay == "Y":
+        skip_play = input("Désirez-vous passer votre tour : ")
+        if skip_play == "Y":
             return None
 
 
-        availableCards = []
-        while(len(availableCards) < int(numberOfCards)):
-            availableCards = []
-            valueOfCards = input("Valeur des cartes : ")
-            if valueOfCards in Card.numbers and Card(valueOfCards, '') >= Card(lastValueOfCards, ''):
+        available_cards = []
+        while(len(available_cards) < int(number_of_cards)):
+            available_cards = []
+            value_of_cards = input("Valeur des cartes : ")
+            if value_of_cards in Card.numbers and Card(value_of_cards, '') >= Card(last_value_of_cards, ''):
                 for card in self.hand:
-                    if card.number == valueOfCards and len(availableCards) < int(numberOfCards):
-                        availableCards.append(card)
+                    if card.number == value_of_cards and len(available_cards) < int(number_of_cards):
+                        available_cards.append(card)
             else:
                 print("Valeur de carte insuffisante")
 
 
-        for removedCard in availableCards:
-            self.remove_from_hand(removedCard)
+        for removed_card in available_cards:
+            self.remove_from_hand(removed_card)
 
-        print("Vous avez joué : " + valueOfCards)
-        return valueOfCards
+        print("Vous avez joué : " + value_of_cards)
+        return value_of_cards
 
     def show_hand(self):
-        cardsValue = []
+        cards_value = []
         for card in self.hand:
-            cardsValue.append(card.number+card.type)
+            cards_value.append(card.number+card.type)
 
-        print("[" + ",".join(cardsValue) + "]")
+        print("[" + ",".join(cards_value) + "]")
 
     def select_number_of_cards(self):
         self.show_hand()
-        numberOfCards = input("Vous êtes le premier joueur, veuillez indiquer le nombre de cartes du tour : ")
-        return numberOfCards
+        number_of_cards = input("Vous êtes le premier joueur, veuillez indiquer le nombre de cartes du tour : ")
+        return number_of_cards
 
     def __eq__(self, other: Player):
         return self.name == other.name
 
 
 class AIPlayer(Player):
-
+    """
+    AI Player class extends from Player
+    Artificial Intelligence Player to replace real player
+    """
     def __init__(self):
         self.name = "AI Player " + str(random.randrange(1, 100))
         super().__init__(self.name)
-    def play(self, numberOfCards, lastValueOfCards):
+    def play(self, number_of_cards, last_value_of_cards):
         print(self.name + " - Play")
 
-        availableCards = []
-        valueOfCards=lastValueOfCards
-        while (len(availableCards) < int(numberOfCards)):
-            availableCards = []
+        available_cards = []
+        value_of_cards=last_value_of_cards
+        while (len(available_cards) < int(number_of_cards)):
+            available_cards = []
             for card in self.hand:
-                if card.number == valueOfCards and len(availableCards) < int(numberOfCards):
-                    availableCards.append(card)
+                if card.number == value_of_cards and len(available_cards) < int(number_of_cards):
+                    available_cards.append(card)
 
-            if len(availableCards) >= int(numberOfCards):
+            if len(available_cards) >= int(number_of_cards):
                 break
-            elif valueOfCards == "2":
+            elif value_of_cards == "2":
                 return None
             else:
-                valueOfCards = Card.numbers[Card.numbers.index(valueOfCards)+1]
+                value_of_cards = Card.numbers[Card.numbers.index(value_of_cards)+1]
 
 
-        for removedCard in availableCards:
-            self.remove_from_hand(removedCard)
+        for removed_card in available_cards:
+            self.remove_from_hand(removed_card)
 
-        print(self.name + " a joué des cartes de valeur " + valueOfCards)
-        return valueOfCards
+        print(self.name + " a joué des cartes de valeur " + value_of_cards)
+        return value_of_cards
 
     def select_number_of_cards(self):
-        return random.randrange(1, 4)
+        return random.randrange(1, 5)
 
 
 class PresidentGame:
+    """
+    PresidentGame class
+    Use to store, shuffle and distribute the deck
+    """
     def __init__(self, players: []):
         self.deck = Deck()
         self.deck.shuffle()
@@ -160,17 +178,21 @@ class PresidentGame:
         self.distribute_cards()
 
     def distribute_cards(self):
-        indexPlayer = 0
+        index_player = 0
         for card in self.deck.cards:
-            if indexPlayer >= len(self.players):
-                indexPlayer = 0
+            if index_player >= len(self.players):
+                index_player = 0
 
-            self.players[indexPlayer].add_to_hand(card)
-            indexPlayer += 1
+            self.players[index_player].add_to_hand(card)
+            index_player += 1
 
 
 class Trick:
+    """
+    Trick class
+    Use to store every information about the current trick
+    """
     def __init__(self):
-        self.numberOfCards = 0
-        self.lastValueOfCards = '3'
-        self.lastPlayer = None
+        self.number_of_cards = 0
+        self.last_value_of_cards = '3'
+        self.last_player = None
