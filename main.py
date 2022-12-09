@@ -83,7 +83,7 @@ while not end_program:
                     print(current_player.name + " devient Président !")
                     have_president = True
 
-            if next_player(current_player, players) == trick.last_player or trick.last_value_of_cards == "2" or (next_player(current_player, players).role == "Président" and next_player(next_player(current_player, players), players) == trick.lastPlayer):
+            if next_player(current_player, players) == trick.last_player or trick.last_value_of_cards == "2" or (next_player(current_player, players).role == "Président" and next_player(next_player(current_player, players), players) == trick.last_player):
                 if trick.last_player.role != "Président":
                     current_player = trick.last_player
                 end_trick = True
