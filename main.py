@@ -33,9 +33,8 @@ while not end_program:
 
 
     for player in players:
-
         if have_president:
-            if player.role == "Président":
+            if player.role == "Troufion":
                 current_player = player
                 have_president = False
                 break
@@ -69,7 +68,6 @@ while not end_program:
                 trick.last_player = current_player
             else:
                 print(current_player.name + " a passé son tour !")
-                print(trick.last_player.name + " : LAST PLAYER")
 
             if len(current_player.hand) == 0:
                 if have_president:
@@ -93,6 +91,6 @@ while not end_program:
                 current_player = next_player(current_player, players)
 
 
-    continue_to_play = input("Voulez vous faire une autre partie : ")
+    continue_to_play = input("Voulez vous faire une autre partie (Y/Entrée) : ")
     if continue_to_play != "Y":
         end_program = True
